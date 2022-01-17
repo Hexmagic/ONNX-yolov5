@@ -62,18 +62,14 @@ void Detector::postProcess(Mat &img, Detection &detection)
         float w = out.at<float>(r, 2);
         float h = out.at<float>(r, 3);
         float sc = out.at<float>(r, 4);
-        scores.push_back(sc);
+        Mat confs = out.row(r).colRange(5,85);
+        confs*=sc;
+        double minV,maxV;
+        Point minI,maxI;
+        minMaxLoc(confs,&minV,&maxV,&minI,&maxI);
+        scores.push_back(maxV);
         boxes.push_back(Rect(cx-w/2, cy-h/2, w, h));
-        indices.push_back(r);
-        int maxI = 0;
-        float maxV = out.at<float>(r, 5);
-        for (int i = 1; i < 80; i++)
-        {
-            if(out.at<float>(r, i+5)>maxV){
-                maxV = out.at<float>(r, i + 5);
-                maxI = i;
-            }
-        }
+        indices.push_back(r);        
         classIndexList.push_back(maxI);
     }
 
@@ -95,7 +91,7 @@ void Detector::drawPredection(Mat &img, std::vector<Rect> &boxes, std::vector<fl
         string name = clsNames[i];
         rectangle(img, rect, Scalar(0, 0, 255));
         cout << name << endl;
-        putText(img, name, Point(rect.x, rect.y), FONT_HERSHEY_PLAIN, 1.2, Scalar(0, 255, 0));
+        putText(img, name+" "+to_string(score), Point(rect.x, rect.y), FONT_HERSHEY_PLAIN, 1.2, Scalar(0, 255, 0));
     }
     imshow("rst", img);
     waitKey(0);

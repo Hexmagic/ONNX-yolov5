@@ -34,7 +34,7 @@ cd ..
 
 
 默认输出会在assets/output.jpg
-
-![](assets/output.jpg)
-
+<center>
+<img src="assets/output.jpg">
+</center>
 

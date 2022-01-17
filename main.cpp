@@ -12,10 +12,10 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     // 默认参数
-    //string model_path = argv[1];
-    //string img_path = argv[2];
-    string img_path = "data/images/bus.jpg";
-    string model_path = "/Users/mix/yolov5/yolov5s.onnx";
+    string model_path = argv[1];
+    string img_path = argv[2];
+    //string img_path = "data/images/bus.jpg";
+    //string model_path = "/Users/mix/yolov5/yolov5s.onnx";
     Config config = {0.25f, 0.45f, model_path, "data/coco.names", Size(640, 640),true};
     cout << "Load Model" << endl;
     Detector detector(config);

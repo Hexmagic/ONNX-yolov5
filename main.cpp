@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     string img_path = argv[2];
     //string img_path = "data/images/bus.jpg";
     //string model_path = "/Users/mix/yolov5/yolov5s.onnx";
-    Config config = {0.25f, 0.45f, model_path, "data/coco.names", Size(640, 640),true};
+    Config config = {0.25f, 0.45f, model_path, "data/coco.names", Size(640, 640),false};
     cout << "Load Model" << endl;
     Detector detector(config);
     cout << "Read Image" << endl;

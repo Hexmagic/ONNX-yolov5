@@ -16,7 +16,7 @@ Deploy ultralytics [Yolov5](https://github.com/ultralytics/yolov5.git) pretained
 
 ## Get ONNX Model 
 
-1. go to  yolov5 [release page](https://github.com/ultralytics/yolov5/releases) download yolov5 pretrained model，such as yolv5s.pt
+1. go to  yolov5 [release page](https://github.com/ultralytics/yolov5/releases) download yolov5 pretrained model（official onnx can't work right)，such as yolv5s.pt
 
 2. use`trace.py` convert yolov5s.pt to yolov5.onnx:
 

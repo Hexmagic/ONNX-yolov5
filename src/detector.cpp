@@ -1,4 +1,5 @@
 #include "detector.h"
+#include "loguru.hpp"
 
 Detector::Detector(Config &config)
 {
@@ -13,7 +14,7 @@ Detector::Detector(Config &config)
     this->model.setPreferableBackend(dnn::DNN_BACKEND_OPENCV);
     this->model.setPreferableTarget(dnn::DNN_TARGET_CPU);
     this->inSize = config.size;
-    this->_auto = config._auto;
+    this->_auto = config._auto;    
 }
 
 PadInfo Detector::letterbox(Mat &img, Size new_shape, Scalar color, bool _auto, bool scaleFill, bool scaleup, int stride)
@@ -62,7 +63,9 @@ void Detector::postProcess(Mat &img, Detection &detection, Colors &cl)
 
     PadInfo padInfo = letterbox(img, this->inSize, Scalar(114, 114, 114), this->_auto, false, true, 32);
     std::vector<Mat> outs = detection.detection;
+    LOG_F(INFO, "Extract output mat from detection");
     Mat out(outs[0].size[1], outs[0].size[2], CV_32F, outs[0].ptr<float>());
+
     std::vector<Rect> boxes;
     std::vector<float> scores;
     std::vector<int> indices;
@@ -74,7 +77,7 @@ void Detector::postProcess(Mat &img, Detection &detection, Colors &cl)
         float w = out.at<float>(r, 2);
         float h = out.at<float>(r, 3);
         float sc = out.at<float>(r, 4);
-        Mat confs = out.row(r).colRange(5, 85);
+        Mat confs = out.row(r).colRange(5, out.row(r).cols);
         confs *= sc;
         double minV, maxV;
         Point minI, maxI;
@@ -84,13 +87,15 @@ void Detector::postProcess(Mat &img, Detection &detection, Colors &cl)
         indices.push_back(r);
         classIndexList.push_back(maxI.x);
     }
-
+    LOG_F(INFO, "Do NMS in %d boxes", (int)boxes.size());
     dnn::NMSBoxes(boxes, scores, this->confThreshold, this->nmsThreshold, indices);
+    LOG_F(INFO, "After NMS  %d boxes keeped", (int)indices.size());
     std::vector<int> clsIndexs;
     for (int i = 0; i < indices.size(); i++)
     {
         clsIndexs.push_back(classIndexList[indices[i]]);
     }
+    LOG_F(INFO, "Draw boxes and labels in orign image");
     drawPredection(img, boxes, scores, clsIndexs, indices, cl);
 }
 
@@ -101,7 +106,7 @@ void Detector::drawPredection(Mat &img, std::vector<Rect> &boxes, std::vector<fl
         Rect rect = boxes[ind[i]];
         float score = scores[ind[i]];
         string name = this->classNames[clsIndexs[i]];
-        int color_ind = clsIndexs[i]%20;
+        int color_ind = clsIndexs[i] % 20;
         Scalar color = cl.palette[color_ind];
         rectangle(img, rect, color);
         char s_text[80];

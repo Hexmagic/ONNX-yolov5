@@ -31,9 +31,10 @@ Mat letterbox(Mat &img, Size new_shape, Scalar color, bool _auto, bool scaleFill
     return dst;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    dnn::Net model = dnn::readNetFromONNX("/Users/mix/yolov5/yolov5s.onnx");
+    string model_path = argv[1];
+    dnn::Net model = dnn::readNetFromONNX(model_path);
     Mat img0 = imread("data/images/bus.jpg");
     Mat img = letterbox(img0, Size(640, 640), Scalar(114, 114, 114), true, false, true, 32);
     Mat blob;    

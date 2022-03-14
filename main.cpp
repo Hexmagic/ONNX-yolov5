@@ -13,10 +13,10 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     // 默认参数
-    // string model_path = argv[1];
-    // string img_path = argv[2];
-    string model_path = "3_best.onnx";
-    string img_path = "data/images/zidane.jpg";
+    string model_path = argv[1];
+    string img_path = argv[2];
+    //string model_path = "3_best.onnx";
+    //string img_path = "data/images/zidane.jpg";
     loguru::init(argc, argv);
     Config config = {0.25f, 0.45f, model_path, "data/coco.names", Size(640, 640),false};
     LOG_F(INFO,"Start main process");
